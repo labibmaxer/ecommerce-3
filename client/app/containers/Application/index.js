@@ -120,8 +120,8 @@ class Application extends React.PureComponent {
 
 const mapStateToProps = state => {
   return {
-    authenticated: state.authentication.authenticated,
-    products: state.product.storeProducts
+    authenticated: state?.authentication?.authenticated || false,
+    products: Array.isArray(state?.product?.storeProducts) ? state.product.storeProducts : []
   };
 };
 

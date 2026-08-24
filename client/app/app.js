@@ -41,12 +41,32 @@ if (token) {
   store.dispatch({ type: SET_AUTH });
 }
 
+// Global JS-level safety handlers
+if (typeof window !== 'undefined') {
+  window.addEventListener('error', function (event) {
+    // prevent white-screen due to uncaught errors; keep console record
+    try {
+      console.error('Global error:', event.error || event.message, event);
+    } catch (e) {}
+  });
+
+  window.addEventListener('unhandledrejection', function (event) {
+    try {
+      console.error('Unhandled rejection:', event.reason);
+    } catch (e) {}
+  });
+}
+
+import ErrorBoundary from './components/Common/ErrorBoundary';
+
 const app = () => (
   <Provider store={store}>
     <ConnectedRouter history={history}>
       <SocketProvider>
         <ScrollToTop>
-          <Application />
+          <ErrorBoundary>
+            <Application />
+          </ErrorBoundary>
         </ScrollToTop>
       </SocketProvider>
     </ConnectedRouter>
